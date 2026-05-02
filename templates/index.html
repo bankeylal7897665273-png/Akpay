@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VaultPay Gateway</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0f172a; color: #fff; overflow-x: hidden; }
+        
+        /* Glassmorphism & Neon */
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; }
+        .neon-text { color: #10b981; text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+        .neon-box { box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); }
+        
+        /* Buttons & Loaders */
+        button { width: 100%; padding: 12px; background: #10b981; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; position: relative; }
+        button:hover { background: #059669; box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
+        button:disabled { background: #475569; cursor: not-allowed; }
+        .loader { border: 3px solid transparent; border-top: 3px solid #fff; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .btn-text.hidden { display: none; }
+        .loader.active { display: block; }
+
+        /* Inputs */
+        input { width: 100%; padding: 12px; background: #1e293b; border: 1px solid #334155; color: #fff; border-radius: 8px; margin-bottom: 15px; outline: none; }
+        input:focus { border-color: #10b981; }
+
+        /* Pages */
+        .page { display: none; padding: 20px; min-height: 100vh; }
+        .page.active { display: block; }
+        
+        /* Auth Page */
+        #auth-page { display: flex; justify-content: center; align-items: center; }
+        .auth-container { width: 100%; max-width: 400px; padding: 30px; }
+
+        /* Sidebar & Layout */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #1e293b; border-bottom: 1px solid #334155; }
+        .menu-btn { background: none; border: none; font-size: 24px; color: #fff; cursor: pointer; width: auto; box-shadow: none;}
+        .sidebar { position: fixed; top: 0; left: -250px; width: 250px; height: 100%; background: #1e293b; transition: 0.3s; z-index: 1000; padding-top: 60px; border-right: 1px solid #334155; }
+        .sidebar.open { left: 0; }
+        .sidebar a { display: block; padding: 15px 20px; color: #cbd5e1; text-decoration: none; border-bottom: 1px solid #334155; transition: 0.3s; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(16, 185, 129, 0.1); color: #10b981; border-left: 4px solid #10b981; }
+        .close-sidebar { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; }
+        
+        /* Dashboard Cards */
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
+        .card { padding: 20px; text-align: center; }
+        .card h3 { font-size: 14px; color: #94a3b8; }
+        .card h2 { font-size: 24px; margin-top: 10px; }
+        
+        .setup-box { background: #1e293b; padding: 15px; border-radius: 8px; font-family: monospace; color: #10b981; margin-top: 10px; word-wrap: break-word; }
+        .api-copy-btn { width: auto; padding: 5px 10px; background: #3b82f6; margin-left: 10px; display: inline-block;}
+    </style>
+</head>
+<body>
+
+    <div id="auth-page" class="page active">
+        <div class="auth-container glass neon-box">
+            <h2 class="neon-text" style="text-align: center; margin-bottom: 20px;">VaultPay</h2>
+            <div id="login-form">
+                <input type="email" id="log-email" placeholder="Email">
+                <input type="password" id="log-pass" placeholder="Password">
+                <button onclick="login()" id="btn-login">
+                    <span class="btn-text">Login</span><div class="loader" id="load-login"></div>
+                </button>
+                <p style="text-align: center; margin-top: 15px; font-size: 14px;">No account? <a href="#" onclick="toggleAuth('signup')" style="color: #10b981;">Create one</a></p>
+            </div>
+            <div id="signup-form" style="display: none;">
+                <input type="email" id="reg-email" placeholder="Email">
+                <input type="password" id="reg-pass" placeholder="Password">
+                <button onclick="register()" id="btn-reg">
+                    <span class="btn-text">Create Account</span><div class="loader" id="load-reg"></div>
+                </button>
+                <p style="text-align: center; margin-top: 15px; font-size: 14px;">Have account? <a href="#" onclick="toggleAuth('login')" style="color: #10b981;">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-page" class="page">
+        <div class="header">
+            <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <h3 class="neon-text">VaultPay</h3>
+            <i class="fas fa-wallet"></i>
+        </div>
+
+        <div class="sidebar" id="sidebar">
+            <i class="fas fa-times close-sidebar" onclick="toggleSidebar()"></i>
+            <a href="#" onclick="switchTab('dashboard-tab')"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="#" onclick="switchTab('api-tab')"><i class="fas fa-code"></i> Create API</a>
+            <a href="#" onclick="switchTab('history-tab')"><i class="fas fa-history"></i> Transactions</a>
+            <a href="#" onclick="switchTab('setup-tab')"><i class="fas fa-laptop-code"></i> Setup Guide</a>
+            <a href="#" onclick="switchTab('settings-tab')"><i class="fas fa-cog"></i> Settings</a>
+            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+
+        <div id="dashboard-tab" class="tab-content active">
+            <h2 style="margin-top: 10px;">Overview</h2>
+            <div class="grid-cards">
+                <div class="card glass"><h3>Total APIs</h3><h2 class="neon-text" id="stat-apis">0</h2></div>
+                <div class="card glass"><h3>Total Requests</h3><h2 style="color: #3b82f6;" id="stat-req">0</h2></div>
+                <div class="card glass"><h3>Success Money</h3><h2 style="color: #10b981;" id="stat-money">₹0</h2></div>
+                <div class="card glass"><h3>Rejected Req</h3><h2 style="color: #ef4444;" id="stat-rej">0</h2></div>
+            </div>
+        </div>
+
+        <div id="api-tab" class="tab-content" style="display: none;">
+            <h2 style="margin-top: 10px;">Create Gateway API</h2>
+            <div class="glass neon-box" style="padding: 20px; margin-top: 20px;">
+                <p style="font-size: 12px; color: #94a3b8; margin-bottom: 15px;">
+                    <i class="fas fa-info-circle"></i> Download Google Pay. Make sure email alerts are enabled in your bank.<br>
+                    Create an App Password from Google Account Security.
+                </p>
+                <input type="email" id="api-email" placeholder="Your Gmail ID (Alerts receiver)">
+                <input type="text" id="api-pass" placeholder="16-Digit App Password">
+                <button onclick="createAPI()" id="btn-api">
+                    <span class="btn-text">Generate API</span><div class="loader" id="load-api"></div>
+                </button>
+            </div>
+            
+            <div id="my-apis" style="margin-top: 20px;">
+                </div>
+        </div>
+
+        <div id="history-tab" class="tab-content" style="display: none;">
+            <h2 style="margin-top: 10px;">Transaction Logs</h2>
+            <div class="glass" style="padding: 15px; margin-top: 15px; overflow-x: auto;">
+                <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <th style="padding: 10px;">UTR</th>
+                            <th style="padding: 10px;">Amount</th>
+                            <th style="padding: 10px;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="txn-list">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="setup-tab" class="tab-content" style="display: none;">
+            <h2 style="margin-top: 10px;">Developer Setup</h2>
+            <p style="margin-top: 10px; color: #cbd5e1;">Use this Python code in your website/bot to verify UTR via your generated API.</p>
+            <div class="setup-box">
+                import requests<br><br>
+                API_URL = "https://your-render-app.onrender.com/api/verify/YOUR_API_ID"<br><br>
+                data = {"utr": "123456789012", "amount": "100"}<br>
+                response = requests.post(API_URL, json=data)<br>
+                print(response.json())
+            </div>
+        </div>
+        
+        <div id="settings-tab" class="tab-content" style="display: none;">
+             <h2 style="margin-top: 10px;">Settings</h2>
+             <div class="glass neon-box" style="padding: 20px; margin-top: 20px;">
+                 <input type="password" id="old-pass" placeholder="Old Password">
+                 <input type="password" id="new-pass" placeholder="New Password">
+                 <button onclick="changePassword()" id="btn-pass">
+                    <span class="btn-text">Update Password</span><div class="loader" id="load-pass"></div>
+                </button>
+             </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Firebase Configuration (Using your provided keys)
+        const firebaseConfig = {
+            apiKey: "AIzaSyASlD4FM6lyIEzBAzPlflhlCwDc3Toh6Fo",
+            authDomain: "earning-a9b0c.firebaseapp.com",
+            databaseURL: "https://earning-a9b0c-default-rtdb.firebaseio.com",
+            projectId: "earning-a9b0c",
+            storageBucket: "earning-a9b0c.firebasestorage.app",
+            messagingSenderId: "543786047307",
+            appId: "1:543786047307:web:4d3d9382359c7383fd3ace"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+        const DB_ROOT = 'VaultPay_System'; // Separate folder inside your RTDB
+        let currentUser = null;
+
+        // --- UI Functions ---
+        function toggleAuth(type) {
+            document.getElementById('login-form').style.display = type === 'login' ? 'block' : 'none';
+            document.getElementById('signup-form').style.display = type === 'signup' ? 'block' : 'none';
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.getElementById(tabId).style.display = 'block';
+            toggleSidebar(); // Auto close sidebar on mobile click
+            if(tabId === 'dashboard-tab') loadStats();
+            if(tabId === 'api-tab') loadMyAPIs();
+            if(tabId === 'history-tab') loadHistory();
+        }
+
+        function btnLoad(btnId, loaderId, state) {
+            const btn = document.getElementById(btnId);
+            const text = btn.querySelector('.btn-text');
+            const loader = document.getElementById(loaderId);
+            if(state) {
+                btn.disabled = true; text.classList.add('hidden'); loader.classList.add('active');
+            } else {
+                btn.disabled = false; text.classList.remove('hidden'); loader.classList.remove('active');
+            }
+        }
+
+        // --- Auth Logic ---
+        auth.onAuthStateChanged(user => {
+            if(user) {
+                currentUser = user;
+                document.getElementById('auth-page').classList.remove('active');
+                document.getElementById('app-page').classList.add('active');
+                switchTab('dashboard-tab');
+            } else {
+                currentUser = null;
+                document.getElementById('auth-page').classList.add('active');
+                document.getElementById('app-page').classList.remove('active');
+            }
+        });
+
+        async function register() {
+            const e = document.getElementById('reg-email').value, p = document.getElementById('reg-pass').value;
+            btnLoad('btn-reg', 'load-reg', true);
+            try { await auth.createUserWithEmailAndPassword(e, p); } 
+            catch(err) { alert(err.message); }
+            btnLoad('btn-reg', 'load-reg', false);
+        }
+
+        async function login() {
+            const e = document.getElementById('log-email').value, p = document.getElementById('log-pass').value;
+            btnLoad('btn-login', 'load-login', true);
+            try { await auth.signInWithEmailAndPassword(e, p); } 
+            catch(err) { alert(err.message); }
+            btnLoad('btn-login', 'load-login', false);
+        }
+
+        function logout() { auth.signOut(); }
+
+        // --- App Logic ---
+        async function createAPI() {
+            const email = document.getElementById('api-email').value;
+            const pass = document.getElementById('api-pass').value;
+            if(!email || !pass) return alert("Fill all details!");
+            
+            btnLoad('btn-api', 'load-api', true);
+            const apiId = currentUser.uid + "_" + Math.random().toString(36).substr(2, 5);
+            
+            await db.ref(`${DB_ROOT}/apis/${apiId}`).set({
+                uid: currentUser.uid,
+                email: email,
+                app_password: pass, // Warning: Storing plain text password
+                created_at: firebase.database.ServerValue.TIMESTAMP
+            });
+            
+            document.getElementById('api-email').value = '';
+            document.getElementById('api-pass').value = '';
+            btnLoad('btn-api', 'load-api', false);
+            alert("API Created Successfully!");
+            loadMyAPIs();
+        }
+
+        function loadMyAPIs() {
+            db.ref(`${DB_ROOT}/apis`).orderByChild('uid').equalTo(currentUser.uid).on('value', snap => {
+                const box = document.getElementById('my-apis');
+                box.innerHTML = '';
+                let count = 0;
+                snap.forEach(child => {
+                    count++;
+                    const apiId = child.key;
+                    box.innerHTML += `
+                        <div class="glass" style="padding: 15px; margin-bottom: 10px; word-break: break-all;">
+                            <strong>API ID:</strong> ${apiId}
+                            <button class="api-copy-btn" onclick="navigator.clipboard.writeText('${apiId}'); alert('Copied!')"><i class="fas fa-copy"></i></button>
+                        </div>`;
+                });
+                document.getElementById('stat-apis').innerText = count;
+            });
+        }
+
+        function loadHistory() {
+            // Need to pull all APIs for this user, then transactions for those APIs
+            // For simplicity, we assume frontend reads transactions logged by backend
+        }
+
+        function loadStats() {
+            // Load dashboard counters dynamically here
+        }
+    </script>
+</body>
+</html>
