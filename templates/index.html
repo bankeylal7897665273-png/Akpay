@@ -18,14 +18,14 @@
         .neon-box { box-shadow: 0 0 25px rgba(16, 185, 129, 0.3); }
         .mota-box { border-width: 2px; }
 
-        /* Popups / Notifications - VIP Level */
-        #notifications { position: fixed; top: 20px; right: 20px; z-index: 2000; width: auto; min-width: 280px; max-width: 90%; }
-        .notification { margin-bottom: 15px; padding: 18px 25px; border-radius: 12px; font-weight: bold; border: 1px solid; animation: slideIn 0.4s ease-out; box-shadow: 0 8px 15px rgba(0,0,0,0.3); }
-        .notification.success { background: rgba(16, 185, 129, 0.2); border-color: #10b981; color: #10b981; }
-        .notification.error { background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #ef4444; }
+        /* Popups / Notifications */
+        #notifications { position: fixed; top: 20px; right: 20px; z-index: 9999; width: auto; min-width: 280px; max-width: 90%; }
+        .notification { margin-bottom: 15px; padding: 18px 25px; border-radius: 12px; font-weight: bold; border: 1px solid; animation: slideIn 0.4s ease-out; box-shadow: 0 8px 15px rgba(0,0,0,0.3); background: #1e293b; }
+        .notification.success { border-color: #10b981; color: #10b981; }
+        .notification.error { border-color: #ef4444; color: #ef4444; }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         
-        /* Buttons, Loaders & Custom UI VIP Style */
+        /* Buttons & Inputs */
         button { width: 100%; padding: 16px; background: #10b981; color: #fff; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; position: relative; }
         button:hover { background: #059669; box-shadow: 0 0 25px rgba(16, 185, 129, 0.6); }
         button:disabled { background: #475569; cursor: not-allowed; }
@@ -34,20 +34,15 @@
         .btn-text.hidden { display: none; }
         .loader.active { display: block; }
         .copy-btn { width: auto; padding: 8px 15px; background: #3b82f6; display: inline-block; font-size: 14px; margin-left: 10px;}
-
-        /* Inputs VIP Level Bold */
         input { width: 100%; padding: 16px; background: #1e293b; border: 2px solid #334155; color: #fff; border-radius: 12px; margin-bottom: 20px; outline: none; font-size: 16px; font-weight: bold;}
         input:focus { border-color: #10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
 
-        /* Pages */
-        .page { display: none; padding: 25px; min-height: 100vh; }
-        .page.active { display: block; }
-        
-        /* Auth Page robust design */
-        #auth-page { display: flex; justify-content: center; align-items: center; }
+        /* STRICT DISPLAY LOGIC TO FIX SCROLL & OVERLAP BUG */
+        #auth-page { display: flex; justify-content: center; align-items: center; min-height: 100vh; width: 100%; position: absolute; top: 0; left: 0; background-color: #0f172a; z-index: 5000; }
+        #app-page { display: none; padding: 25px; min-height: 100vh; width: 100%; }
         .auth-container { width: 100%; max-width: 420px; padding: 40px 30px; }
 
-        /* Robust Sidebar with Auto Close */
+        /* Sidebar & Layout */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #1e293b; border-bottom: 2px solid #334155; position: fixed; top: 0; left: 0; width: 100%; z-index: 999;}
         .menu-btn { background: none; border: none; font-size: 26px; color: #fff; cursor: pointer; width: auto; box-shadow: none;}
         .sidebar { position: fixed; top: 0; left: -260px; width: 260px; height: 100%; background: #1e293b; transition: 0.3s; z-index: 1000; padding-top: 70px; border-right: 2px solid #334155; overflow-y: auto;}
@@ -56,8 +51,10 @@
         .sidebar a:hover, .sidebar a.active { background: rgba(16, 185, 129, 0.1); color: #10b981; border-left: 5px solid #10b981; }
         .close-sidebar { position: absolute; top: 18px; right: 25px; font-size: 26px; cursor: pointer; color: #94a3b8; }
         
-        /* Dashboard Tab complex stats and bold counters */
-        #dashboard-tab { padding-top: 80px; }
+        .tab-content { display: none; padding-top: 80px; }
+        .tab-content.active { display: block; }
+        
+        /* Dashboard Cards */
         .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-top: 25px; }
         .card { padding: 25px; text-align: center; border-width: 2px; position: relative;}
         .card h3 { font-size: 15px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
@@ -65,8 +62,6 @@
         .status-dot { width: 12px; height: 12px; border-radius: 50%; position: absolute; top: 10px; right: 10px; }
         .dot-vip { background: #a855f7; box-shadow: 0 0 10px #a855f7; }
         .dot-free { background: #3b82f6; box-shadow: 0 0 10px #3b82f6; }
-        .dot-active { background: #10b981; box-shadow: 0 0 10px #10b981; }
-        .dot-disabled { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
         
         .api-item { padding: 20px; border-bottom: 2px solid #334155; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
         .setup-box { background: #1e293b; padding: 20px; border-radius: 10px; font-family: monospace; color: #10b981; margin-top: 15px; word-wrap: break-word; font-size: 14px; position: relative;}
@@ -76,9 +71,10 @@
 
     <div id="notifications"></div>
 
-    <div id="auth-page" class="page active">
+    <div id="auth-page">
         <div class="auth-container glass neon-box mota-box">
             <h2 class="neon-text" style="text-align: center; margin-bottom: 30px; font-size: 28px;">VaultPay VIP Gateway</h2>
+            
             <div id="login-form">
                 <input type="email" id="log-email" placeholder="Email" required>
                 <input type="password" id="log-pass" placeholder="Password" required>
@@ -87,19 +83,20 @@
                 </button>
                 <p style="text-align: center; margin-top: 20px; font-size: 14px; color: #cbd5e1;">New here? <a href="#" onclick="toggleAuth('signup')" style="color: #10b981; text-decoration: underline;">Create an Account</a></p>
             </div>
+
             <div id="signup-form" style="display: none;">
                 <input type="email" id="reg-email" placeholder="Email" required>
                 <input type="password" id="reg-pass" placeholder="Password (Min 6)" required>
                 <input type="password" id="reg-repass" placeholder="Re-enter Password" required>
                 <button onclick="register()" id="btn-reg">
-                    <span class="btn-text">Signup <i class="fas fa-user-plus"></i></span><div class="loader" id="load-reg"></div>
+                    <span class="btn-text">Signup & Enter <i class="fas fa-user-plus"></i></span><div class="loader" id="load-reg"></div>
                 </button>
                 <p style="text-align: center; margin-top: 20px; font-size: 14px; color: #cbd5e1;">Have an account? <a href="#" onclick="toggleAuth('login')" style="color: #10b981; text-decoration: underline;">Login</a></p>
             </div>
         </div>
     </div>
 
-    <div id="app-page" class="page">
+    <div id="app-page">
         <div class="header">
             <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
             <h3 class="neon-text">VaultPay Gateway</h3>
@@ -111,10 +108,9 @@
             <a href="#" onclick="switchTab('dashboard-tab')"><i class="fas fa-home"></i> Dashboard</a>
             <a href="#" onclick="switchTab('api-tab')"><i class="fas fa-code"></i> Setup Your APIs</a>
             <a href="#" onclick="switchTab('history-tab')"><i class="fas fa-history"></i> Transaction History</a>
-            <a href="#" onclick="switchTab('plan-tab')"><i class="fas fa-star" style="color: #a855f7;"></i> Buy Plans (Reactivate)</a>
-            <a href="#" onclick="switchTab('setup-tab')"><i class="fas fa-laptop-code"></i> Setup Your Prompt</a>
-            <a href="#" onclick="switchTab('settings-tab')"><i class="fas fa-cog"></i> Account Settings</a>
-            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <a href="#" onclick="switchTab('plan-tab')"><i class="fas fa-star" style="color: #a855f7;"></i> Buy Plans</a>
+            <a href="#" onclick="switchTab('setup-tab')"><i class="fas fa-laptop-code"></i> Setup Guide</a>
+            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt" style="color: #ef4444;"></i> Logout</a>
         </div>
 
         <div id="dashboard-tab" class="tab-content active">
@@ -124,13 +120,11 @@
                 <div class="card glass mota-box">
                     <h3>Your Total APIs</h3>
                     <h2 id="stat-apis">0/5</h2>
-                    <p style="font-size: 13px; color: #94a3b8; margin-top: 5px;" id="api-limit-text">Total free slots are 5. After that, buy a plan.</p>
                 </div>
-                <div class="card glass mota-box" style="border-color: #a855f7; box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);">
+                <div class="card glass mota-box" style="border-color: #a855f7;">
                     <div class="status-dot dot-free" id="stat-vip-dot"></div>
                     <h3>Account Type</h3>
                     <h2 id="stat-vip-text" style="color: #a855f7;">FREE</h2>
-                    <p style="font-size: 13px; color: #94a3b8; margin-top: 5px;" id="plan-credits-text">Upgrade for higher limit.</p>
                 </div>
                 <div class="card glass mota-box">
                     <h3>Total Requests</h3>
@@ -143,73 +137,63 @@
             </div>
         </div>
 
-        <div id="api-tab" class="tab-content" style="display: none; padding-top: 80px;">
+        <div id="api-tab" class="tab-content">
             <h2 style="margin-top: 15px; border-left: 5px solid #10b981; padding-left: 15px;">Setup Bank Gmail API</h2>
             <div class="glass neon-box mota-box" style="padding: 25px; margin-top: 25px;">
-                <input type="email" id="api-email" placeholder="Your Gmail ID (Alerts Receiver)">
+                <input type="email" id="api-email" placeholder="Gmail ID (Bank Alerts Receiver)">
                 <input type="text" id="api-pass" placeholder="16-Digit App Password">
                 <button onclick="createAPI()" id="btn-api">
-                    <span class="btn-text">Generate Secure API <i class="fas fa-plus"></i></span><div class="loader" id="load-api"></div>
+                    <span class="btn-text">Generate API <i class="fas fa-plus"></i></span><div class="loader" id="load-api"></div>
                 </button>
             </div>
-            
             <h3 style="margin-top: 30px; font-size: 18px; color: #cbd5e1;">Your Generated APIs</h3>
-            <div id="my-apis" style="margin-top: 15px;" class="glass">
-                </div>
+            <div id="my-apis" style="margin-top: 15px;" class="glass"></div>
         </div>
 
-        <div id="history-tab" class="tab-content" style="display: none; padding-top: 80px;">
-            <h2 style="margin-top: 15px; border-left: 5px solid #10b981; padding-left: 15px;">Verifications History</h2>
+        <div id="history-tab" class="tab-content">
+            <h2 style="margin-top: 15px; border-left: 5px solid #10b981; padding-left: 15px;">Transaction History</h2>
             <div class="glass" style="padding: 20px; margin-top: 20px; overflow-x: auto;">
                 <table style="width: 100%; text-align: left; border-collapse: collapse; min-width: 500px;">
                     <thead>
-                        <tr style="border-bottom: 2px solid #334155; text-transform: uppercase; color: #94a3b8; font-size: 14px;">
+                        <tr style="border-bottom: 2px solid #334155; color: #94a3b8; font-size: 14px;">
                             <th style="padding: 12px;">UTR</th>
                             <th style="padding: 12px;">Amount</th>
                             <th style="padding: 12px;">Status</th>
-                            <th style="padding: 12px;">Timestamp</th>
                         </tr>
                     </thead>
-                    <tbody id="txn-list">
-                    </tbody>
+                    <tbody id="txn-list"></tbody>
                 </table>
             </div>
         </div>
 
-        <div id="plan-tab" class="tab-content" style="display: none; padding-top: 80px;">
-             <h2 style="margin-top: 15px; border-left: 5px solid #10b981; padding-left: 15px;">Unlock VIP Premium Plans</h2>
-             <div class="grid-cards" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+        <div id="plan-tab" class="tab-content">
+             <h2 style="margin-top: 15px; border-left: 5px solid #10b981; padding-left: 15px;">Unlock VIP / Reactivate</h2>
+             <div class="grid-cards">
                  <div class="card glass mota-box" style="border-color: #a855f7;">
                      <i class="fas fa-rocket fa-3x neon-text" style="color: #a855f7;"></i>
                      <h2 style="font-size: 26px;">VIP Reactivate Plan</h2>
-                     <p style="margin-top: 10px; color: #cbd5e1;">Activate all 5 disabled slots and increase limit to **20 APIs**.</p>
-                     <h2 style="color: #10b981; font-size: 40px; margin: 20px 0;">₹10<span style="font-size: 16px; color: #cbd5e1;"> / VIP Slot Activation</span></h2>
-                     <h4 style="color: #94a3b8; margin-bottom: 10px;">Steps to Buy:</h4>
-                     <ol style="color: #cbd5e1; font-size: 14px; text-align: left; padding-left: 20px;">
-                         <li>Scan Scan direct Scan via any UPI scanner: <b style="color: #fff; font-size: 16px;">Scan admin QR (Place QR from Firebase).</b></li>
-                         <li>Pay pay direct upi: `admin.gateway@upi` <button class="copy-btn" onclick="navigator.clipboard.writeText('admin.gateway@upi'); showPop('UPI Copied!', 'success');">Copy</button></li>
-                         <li>Paste paste Verification UTR from Firebase direct here direct here.</li>
-                     </ol>
-                     <input type="text" id="plan-utr" placeholder="Verification UTR" required style="margin-top: 20px;">
+                     <h2 style="color: #10b981; font-size: 40px; margin: 20px 0;">₹10</h2>
+                     <p style="color: #cbd5e1; font-size: 14px; text-align: left; margin-bottom: 10px;">Pay via UPI: `admin.gateway@upi` <button class="copy-btn" onclick="navigator.clipboard.writeText('admin.gateway@upi'); showPop('UPI Copied!', 'success');">Copy</button></p>
+                     <input type="text" id="plan-utr" placeholder="Paste UTR Here" required>
                      <button onclick="submitPlanRequest()" id="btn-plan-buy" style="background: #a855f7;">
-                        <span class="btn-text">Submit Payment proof <i class="fas fa-check-circle"></i></span><div class="loader" id="load-plan-buy"></div>
+                        <span class="btn-text">Submit Request <i class="fas fa-check-circle"></i></span><div class="loader" id="load-plan-buy"></div>
                     </button>
                  </div>
              </div>
         </div>
 
-        <div id="setup-tab" class="tab-content" style="display: none; padding-top: 80px;">
-            <h2 style="margin-top: 15px; border-left: 5px solid #10b981; padding-left: 15px;">Setup for Unlimited Supporter Prompt</h2>
+        <div id="setup-tab" class="tab-content">
+            <h2 style="margin-top: 15px; border-left: 5px solid #10b981; padding-left: 15px;">Developer Setup Guide</h2>
             <div class="setup-box" id="prompt-box">
-                Create a full setup to direct Scan Scan to QR and direct form with UTR direct. Integrate for multi-user bank gateway unlimited direct scan. Full HTML full full setup direct: Create for unlimited supporter Scan direct full full form setup integrated for dynamic API unlimited integrated setup integrated support dynamic QR Scan dynamically integrated.
+                Give this prompt to any AI: "I have a payment API URL: [YOUR_API_URL]. Write a full HTML/JS code for a payment page where user scans a QR, enters UTR, and it hits my API using POST method to verify. The API takes JSON { 'utr': '12345...', 'amount': '10' }."
             </div>
-            <button class="copy-btn" onclick="copyPrompt()">Copy setup for unlimited supporter prompt Setup full Setup Integrated Full setup integrated dynamically.</button>
+            <button class="copy-btn" style="margin-top: 15px;" onclick="copyPrompt()">Copy AI Prompt</button>
         </div>
         
     </div>
 
     <script>
-        // Use YOUR firebaseConfig keys. separated separation separated separated separated separate separation separate.
+        // Use YOUR firebaseConfig keys here
         const firebaseConfig = {
             apiKey: "AIzaSyASlD4FM6lyIEzBAzPlflhlCwDc3Toh6Fo",
             authDomain: "earning-a9b0c.firebaseapp.com",
@@ -222,11 +206,9 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
-        const DB_ROOT = 'VaultPay_System'; // separation separation separation separated separation separation separated
+        const DB_ROOT = 'VaultPay_System';
         let currentUser = null;
-        let isUserVIP = false;
 
-        // Custom Custom custom pop custom pop Custom pop Custom custom customization custom pop.
         function showPop(msg, type) {
             const box = document.getElementById('notifications');
             const n = document.createElement('div');
@@ -237,190 +219,147 @@
             setTimeout(() => n.remove(), 4000);
         }
 
-        // --- Robust Auth UI and logic for Login Re-Password ---
         function toggleAuth(type) {
             document.getElementById('login-form').style.display = type === 'login' ? 'block' : 'none';
             document.getElementById('signup-form').style.display = type === 'signup' ? 'block' : 'none';
         }
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function toggleSidebar() { 
+            const sb = document.getElementById('sidebar');
+            if(sb.style.left === '0px') { sb.style.left = '-260px'; } 
+            else { sb.style.left = '0px'; }
+        }
 
+        // PERFECT TAB SWITCHING (No Scroll Issues)
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
             document.getElementById(tabId).style.display = 'block';
-            toggleSidebar(); // robust auto robust close robust
+            window.scrollTo(0, 0); // Upar scroll kar dega automatically
+            document.getElementById('sidebar').style.left = '-260px'; // Close sidebar
+            
             if(tabId === 'dashboard-tab') loadStats();
             if(tabId === 'api-tab') loadMyAPIs();
-            if(tabId === 'history-tab') loadHistory();
         }
 
         function btnLoad(btnId, loaderId, state) {
             const btn = document.getElementById(btnId);
             const text = btn.querySelector('.btn-text');
             const loader = document.getElementById(loaderId);
-            if(state) {
-                btn.disabled = true; text.classList.add('hidden'); loader.classList.add('active');
-            } else {
-                btn.disabled = false; text.classList.remove('hidden'); loader.classList.remove('active');
-            }
+            if(state) { btn.disabled = true; text.classList.add('hidden'); loader.classList.add('active'); } 
+            else { btn.disabled = false; text.classList.remove('hidden'); loader.classList.remove('active'); }
         }
 
-        // Robust robust user robust user robust user state robust state user robust.
+        // AUTO-LOGIN & STRICT DISPLAY LOGIC
         auth.onAuthStateChanged(async user => {
             if(user) {
                 currentUser = user;
-                // create or load user profile robust separation robust.
+                // Ensure profile exists
                 const prof = await db.ref(`${DB_ROOT}/users/${user.uid}`).once('value');
                 if(!prof.exists()){
                     await db.ref(`${DB_ROOT}/users/${user.uid}`).set({email: user.email, is_vip: false, allowed_api_count: 5, api_count: 0, all_apis_disabled: false});
                 }
-                isUserVIP = prof.val()?.is_vip || false;
-                document.getElementById('auth-page').classList.remove('active');
-                document.getElementById('app-page').classList.add('active');
-                loadStats();
-                showPop('Logged in Successfully as VIP!', 'success');
+                
+                // HIDE LOGIN COMPLETELY, SHOW APP
+                document.getElementById('auth-page').style.display = 'none';
+                document.getElementById('app-page').style.display = 'block';
+                
+                switchTab('dashboard-tab'); // Go to dashboard
+                showPop('Welcome to Dashboard!', 'success');
             } else {
-                currentUser = null; isUserVIP = false;
-                document.getElementById('auth-page').classList.add('active');
-                document.getElementById('app-page').classList.remove('active');
+                currentUser = null;
+                // SHOW LOGIN, HIDE APP COMPLETELY
+                document.getElementById('auth-page').style.display = 'flex';
+                document.getElementById('app-page').style.display = 'none';
             }
         });
 
         async function register() {
             const e = document.getElementById('reg-email').value, p = document.getElementById('reg-pass').value, rp = document.getElementById('reg-repass').value;
-            if(!e || !p || !rp) return showPop("All fields direct fields direct fields required!", 'error');
-            if(p !== rp) return showPop("Passwords do not match direct mismatch direct match mismatch mismatched matched matched match match match matched!", 'error');
-            if(p.length < 6) return showPop("Min password direct length direct is 6!", 'error');
+            if(!e || !p || !rp) return showPop("Sare boxes fill karo!", 'error');
+            if(p !== rp) return showPop("Password match nahi ho raha!", 'error');
+            
             btnLoad('btn-reg', 'load-reg', true);
-            try { await auth.createUserWithEmailAndPassword(e, p); toggleAuth('login'); } 
+            try { 
+                await auth.createUserWithEmailAndPassword(e, p); 
+                // firebase automatically logs in, so onAuthStateChanged will trigger and take them to dashboard!
+                showPop("Account Created successfully!", 'success');
+            } 
             catch(err) { showPop(err.message, 'error'); }
             btnLoad('btn-reg', 'load-reg', false);
         }
 
         async function login() {
             const e = document.getElementById('log-email').value, p = document.getElementById('log-pass').value;
-            if(!e || !p) return showPop("Email/Password fields required direct fields!", 'error');
+            if(!e || !p) return showPop("Email aur Password dalo!", 'error');
             btnLoad('btn-login', 'load-login', true);
             try { await auth.signInWithEmailAndPassword(e, p); } 
-            catch(err) { showPop("Invalid credentials direct credentials invalid invalid!", 'error'); }
+            catch(err) { showPop("Galat Email ya Password!", 'error'); }
             btnLoad('btn-login', 'load-login', false);
         }
 
-        function logout() { auth.signOut(); showPop('Logout direct Logout direct Logged out Successfully!', 'success'); }
+        function logout() { auth.signOut(); }
 
-        // --- Create create Create APIs dynamic dynamic dynamic create APIs dynamic dynamic dynamic dynamic dynamic create Create ---
+        // --- DASHBOARD & APIs LOGIC ---
+        async function loadStats() {
+            if(!currentUser) return;
+            const pRes = await db.ref(`${DB_ROOT}/users/${currentUser.uid}`).once('value');
+            const p = pRes.val(); const isVIP = p?.is_vip || false;
+            document.getElementById('stat-apis').innerText = `${p?.api_count || 0}/${isVIP ? 20 : 5}`;
+            document.getElementById('stat-vip-text').innerText = isVIP ? 'VIP' : 'FREE';
+        }
+
         async function createAPI() {
-            const email = document.getElementById('api-email').value;
-            const pass = document.getElementById('api-pass').value;
-            if(!email || !pass) return showPop("Direct details details all details all direct details integrated Integrated Integrated Dynamic Integrated integrated", 'error');
-            
+            const email = document.getElementById('api-email').value, pass = document.getElementById('api-pass').value;
+            if(!email || !pass) return showPop("Pura form fill karo", 'error');
             btnLoad('btn-api', 'load-api', true);
+            
             const userRef = db.ref(`${DB_ROOT}/users/${currentUser.uid}`);
             const prof = (await userRef.once('value')).val();
-            const allowed = prof.allowed_api_count;
-            const count = prof.api_count;
-            const isVIP = prof.is_vip;
-
-            // Check dynamic check dynamic check check dynamic check.
-            if(count >= allowed && !isVIP){
-                btnLoad('btn-api', 'load-api', false);
-                return showPop("Limit Limit direct reached direct separation separate separate separation", 'error');
+            if(prof.api_count >= prof.allowed_api_count && !prof.is_vip){
+                btnLoad('btn-api', 'load-api', false); return showPop("API Limit poori ho gayi! VIP lo.", 'error');
             }
 
             const apiId = currentUser.uid + "_" + Math.random().toString(36).substr(2, 5);
-            // new API dynamic creation separation.
-            await db.ref(`${DB_ROOT}/apis/${apiId}`).set({
-                uid: currentUser.uid, email: email, app_password: pass, // separation separation separate separation separation separation separation separation separate.
-                status: 'active', created_at: firebase.database.ServerValue.TIMESTAMP
-            });
-
-            // update count separation separation.
-            let newCount = count + 1;
-            let updateData = {api_count: newCount};
+            await db.ref(`${DB_ROOT}/apis/${apiId}`).set({ uid: currentUser.uid, email: email, app_password: pass, status: 'active' });
+            await userRef.update({api_count: prof.api_count + 1});
             
-            // Limit Limit limit Limit logic for free free.
-            if(newCount === 5 && !isVIP){
-                updateData.all_apis_disabled = true;
-                showPop("Account Slots slots full full account slot full full slot slots full account Slots full direct slot slots direct integrated slot slots account slot", 'error');
-                // disable existing dynamic dynamic dynamic disable integrated dynamic direct integrated dynamic dynamic disable existing dynamic existing integrated disable.
-                await db.ref(`${DB_ROOT}/apis`).orderByChild('uid').equalTo(currentUser.uid).once('value', snap => {
-                    snap.forEach(child => child.ref.update({status: 'disabled'}));
-                });
-            } else {
-                showPop('Dynamic dynamic dynamic Dynamic API dynamic API integrated integrated dynamic integrated dynamic integration dynamic integrated integration dynamic', 'success');
-            }
-
-            await userRef.update(updateData);
             document.getElementById('api-email').value = ''; document.getElementById('api-pass').value = '';
-            btnLoad('btn-api', 'load-api', false); loadMyAPIs(); loadStats();
+            btnLoad('btn-api', 'load-api', false); loadMyAPIs(); loadStats(); showPop('API Ban Gayi!', 'success');
         }
 
-        // dynamic display dynamic display dynamic dynamically integrated dynamically dynamic dynamically dynamic integrated dynamically display.
         function loadMyAPIs() {
+            if(!currentUser) return;
             db.ref(`${DB_ROOT}/apis`).orderByChild('uid').equalTo(currentUser.uid).on('value', snap => {
-                const box = document.getElementById('my-apis');
-                box.innerHTML = '';
-                if(snap.val() === null) { box.innerHTML = '<p style="text-align:center; padding:20px; color:#94a3b8;">Create dynamic generate direct Dynamic Integrated Dynamic API</p>'; return; }
+                const box = document.getElementById('my-apis'); box.innerHTML = '';
+                if(snap.val() === null) { box.innerHTML = '<p>No APIs yet</p>'; return; }
                 snap.forEach(child => {
-                    const d = child.val(); const id = child.key; const stat = d.status;
-                    const dotClass = stat==='active'?'dot-active':'dot-disabled';
+                    const id = child.key, stat = child.val().status;
                     box.innerHTML += `
-                        <div class="api-item ${stat==='disabled'?'disabled-item':''}" style="border-radius:12px; border:2px solid; margin:10px; border-color:${stat==='active'?'#10b981':'#ef4444'};">
+                        <div class="api-item" style="border: 1px solid ${stat==='active'?'#10b981':'#ef4444'}; border-radius: 10px; margin-bottom: 10px;">
                             <div>
-                                <strong style="color:${stat==='active'?'#10b981':'#ef4444'}">Status: ${stat.toUpperCase()}</strong>
-                                <p style="font-size:12px; color:#cbd5e1; margin-top:5px; word-break:break-all">Email direct Email: ${d.email}</p>
-                                <p style="font-size:12px; color:#cbd5e1; margin-top:5px; word-break:break-all">Dynamic separation separation unique API dynamic dynamic integrated: Vaultpay separation integrated separate separation dynamic integration separate</p>
+                                <strong style="color:${stat==='active'?'#10b981':'#ef4444'}">${stat.toUpperCase()}</strong>
+                                <p style="font-size: 13px;">${child.val().email}</p>
                             </div>
-                            <div style="text-align:right">
-                                <button class="copy-btn" onclick="navigator.clipboard.writeText('${id}'); showPop('Copied unique separation separated dynamic unique separation unique integration unique!', 'success');">API</button>
-                                <p style="font-size:11px; color:#94a3b8; margin-top:5px;">Setup separation integrated dynamically setup guide setup setup prompt setup guided integrated</p>
-                            </div>
+                            <button class="copy-btn" onclick="navigator.clipboard.writeText('https://YOUR_RENDER_URL.onrender.com/api/verify/${currentUser.uid}/${id}'); showPop('API Link Copied!', 'success');">Copy API</button>
                         </div>`;
                 });
             });
         }
 
-        // detailed robust detailed dynamic detailed integration robust robust detailed robust logic dynamic direct robust detailed integrated.
-        async function loadStats() {
-            const pRes = await db.ref(`${DB_ROOT}/users/${currentUser.uid}`).once('value');
-            const p = pRes.val(); const isVIP = p?.is_vip || false;
-            const allowed = isVIP? 20 : 5; const count = p?.api_count || 0;
-            const allDisabled = p?.all_apis_disabled || false;
-
-            document.getElementById('stat-apis').innerText = `${count}/${allowed}`;
-            document.getElementById('stat-vip-text').innerText = isVIP ? 'VIP PREMIER' : 'FREE BASIC';
-            document.getElementById('stat-vip-text').style.color = isVIP ? '#a855f7' : '#3b82f6';
-            document.getElementById('stat-vip-dot').className = `status-dot ${isVIP?'dot-vip':'dot-free'}`;
-            document.getElementById('plan-credits-text').innerText = isVIP ? 'Upgrade upgrade separation upgrade separation direct upgraded upgrade separate updated' : 'upgrade updated updated upgrade update upgrade updated updated';
-
-            // separation separation warning separation separation separation warning separated.
-            const warnBox = document.getElementById('dashboard-warnings'); warnBox.innerHTML = '';
-            if(allDisabled){
-                warnBox.innerHTML = '<div class="glass neon-box" style="background:rgba(239, 68, 68, 0.2); border:2px solid #ef4444; padding:15px; color:#ef4444; margin-top:20px; font-weight:bold; border-radius:12px; text-align:center;">Slots account all slots separation unique integration slots slots disabled disabled. slots slots account unique integration slots unique account slots disabled</div>';
-            }
-        }
-
-        // plans request plans robust plans robust plans dynamic robust plans integration robust integrated dynamic integrated.
         async function submitPlanRequest() {
             const utr = document.getElementById('plan-utr').value;
-            if(!utr || utr.length < 12) return showPop("Dynamic direct 12 direct integrated validation direct validated integrated integrated dynamic direct direct validated validated", 'error');
+            if(!utr) return showPop("UTR dalo", 'error');
             btnLoad('btn-plan-buy', 'load-plan-buy', true);
-            try {
-                await db.ref(`${DB_ROOT}/plan_requests/${currentUser.uid}`).set({
-                    utr: utr, plan: 'VIP Reactivate', status: 'pending', amount: 10, timestamp: firebase.database.ServerValue.TIMESTAMP
-                });
-                showPop('Dynamic unique verification direct integrated direct unique direct integrated dynamic verification unique integration unique validation integration validation', 'success');
-                document.getElementById('plan-utr').value = '';
-            } catch(e){ showPop('Request request dynamic robust request integration robust integrated robust integrated dynamic dynamic integration dynamic request request dynamic integration', 'error'); }
+            await db.ref(`${DB_ROOT}/plan_requests/${currentUser.uid}`).set({ utr: utr, status: 'pending' });
+            showPop('Request Bhej Di Gayi Hai Admin Ko!', 'success');
+            document.getElementById('plan-utr').value = '';
             btnLoad('btn-plan-buy', 'load-plan-buy', false);
         }
 
-        // setup prompt unlimited robust robust integration.
         function copyPrompt() {
-            const p = document.getElementById('prompt-box').innerText;
-            navigator.clipboard.writeText(p); showPop('Dynamic setup setup integrated setup guide setup setup prompt guided integrated integrated dynamically guided guided guided guided guided guided', 'success');
+            navigator.clipboard.writeText(document.getElementById('prompt-box').innerText);
+            showPop('Prompt Copied!', 'success');
         }
-        
     </script>
 </body>
 </html>
